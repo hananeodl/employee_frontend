@@ -8,5 +8,6 @@ export const paths = {
     integrations: '/dashboard/integrations',
     settings: '/dashboard/settings',
   },
+  professeurs : '/professeurs',
   errors: { notFound: '/errors/not-found' },
 } as const;

@@ -64,7 +64,7 @@ export async function PUT(req) {
 
   // Mise à jour de l'utilisateur dans la base de données
   try {
-    const updateQuery = `UPDATE professeurs SET ${updates.join(", ")} WHERE id = ?`;
+    const updateQuery = `UPDATE professeur SET ${updates.join(", ")} WHERE id = ?`;
     const result = await db.execute(updateQuery, values);
 
     // Vérifier si l'utilisateur a été trouvé et mis à jour
