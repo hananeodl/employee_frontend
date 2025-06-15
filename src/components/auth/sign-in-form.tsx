@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import * as React from 'react';
 import RouterLink from 'next/link';
@@ -15,13 +15,19 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, SubmitHandler, FieldValues } from 'react-hook-form'; // Ajout de SubmitHandler et FieldValues
 import { z as zod } from 'zod';
-import { useState} from 'react';
+import { useState } from 'react';
+
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email est requis' }).email({ message: 'Email invalide' }),
   password: zod.string().min(1, { message: 'Mot de passe est requis' }),
 });
+
+interface ApiResponse {
+  token: string;
+  message?: string;
+}
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -37,7 +43,8 @@ export function SignInForm(): React.JSX.Element {
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
-  const onSubmit = React.useCallback(async (values: { email: string; password: string }) => {
+  // Ajout du type SubmitHandler<FieldValues> pour la fonction onSubmit
+  const onSubmit: SubmitHandler<FieldValues> = React.useCallback(async (values) => {
     setIsPending(true);
     setErrorMessage(null);
 
@@ -48,11 +55,12 @@ export function SignInForm(): React.JSX.Element {
         body: JSON.stringify(values),
       });
 
-      const data = await response.json();
+      const data: ApiResponse = await response.json(); // Typage de la réponse
+
       console.log('Réponse API:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Erreur de connexion');
+        throw new Error(data.message ?? 'Erreur de connexion');
       }
 
       if (typeof window !== 'undefined') {
@@ -61,14 +69,20 @@ export function SignInForm(): React.JSX.Element {
       }
 
       // Vérifier si le token est bien stocké avant de rediriger
-      if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token');
+      if (token) {
         console.log('Token stocké avec succès');
         router.replace('/professeurs');
       } else {
         console.error('Erreur : Token non stocké.');
       }
-    } catch (error: any) {
-      setErrorMessage(error.message || 'Une erreur est survenue.');
+    } catch (error: unknown) {
+      // Typage spécifique pour l'erreur
+      if (error instanceof Error) {
+        setErrorMessage(error.message || 'Une erreur est survenue.');
+      } else {
+        setErrorMessage('Une erreur inconnue est survenue.');
+      }
     } finally {
       setIsPending(false);
     }
@@ -79,7 +93,7 @@ export function SignInForm(): React.JSX.Element {
       <Stack spacing={1}>
         <Typography variant="h4">Connexion</Typography>
         <Typography color="text.secondary" variant="body2">
-          Vous n'avez pas de compte ?{' '}
+          Vous n&apos;avez pas de compte ?{' '}
           <Link component={RouterLink} href="/auth/sign-up" underline="hover" variant="subtitle2">
             Inscrivez-vous
           </Link>
@@ -94,7 +108,7 @@ export function SignInForm(): React.JSX.Element {
               <FormControl error={Boolean(errors.email)} fullWidth>
                 <InputLabel>Email</InputLabel>
                 <OutlinedInput {...field} label="Email" type="email" autoComplete="email" />
-                {errors.email && <FormHelperText>{errors.email.message}</FormHelperText>}
+                {errors.email && <FormHelperText>{errors.email.message as React.ReactNode}</FormHelperText>}
               </FormControl>
             )}
           />
@@ -126,7 +140,7 @@ export function SignInForm(): React.JSX.Element {
                     </button>
                   }
                 />
-                {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
+                {errors.password && <FormHelperText>{errors.password.message as React.ReactNode}</FormHelperText>}
               </FormControl>
             )}
           />

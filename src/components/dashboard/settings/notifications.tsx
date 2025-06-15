@@ -1,5 +1,4 @@
 'use client';
-
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -12,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid2 from '@mui/material/Grid';
 
 export function Notifications(): React.JSX.Element {
   return (
@@ -25,8 +24,8 @@ export function Notifications(): React.JSX.Element {
         <CardHeader subheader="Manage the notifications" title="Notifications" />
         <Divider />
         <CardContent>
-          <Grid container spacing={6} wrap="wrap">
-            <Grid md={4} sm={6} xs={12}>
+          <Grid2 container spacing={6} wrap="wrap">
+            <Grid2 md={4} sm={6} xs={12}>
               <Stack spacing={1}>
                 <Typography variant="h6">Email</Typography>
                 <FormGroup>
@@ -34,8 +33,8 @@ export function Notifications(): React.JSX.Element {
                   <FormControlLabel control={<Checkbox />} label="Security updates" />
                 </FormGroup>
               </Stack>
-            </Grid>
-            <Grid md={4} sm={6} xs={12}>
+            </Grid2>
+            <Grid2 md={4} sm={6} xs={12}>
               <Stack spacing={1}>
                 <Typography variant="h6">Phone</Typography>
                 <FormGroup>
@@ -43,8 +42,8 @@ export function Notifications(): React.JSX.Element {
                   <FormControlLabel control={<Checkbox />} label="Security updates" />
                 </FormGroup>
               </Stack>
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>

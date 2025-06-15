@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import mysql, {RowDataPacket} from 'mysql2/promise';
 import { writeFile, mkdir} from 'fs/promises';
 import path from 'path';
+import { enregistrerLog } from "@/services/logService";
 
 const pool = mysql.createPool({
   host: "localhost",
@@ -129,6 +130,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         [id, matiereId]
       );
     }
+
+    const professeurId = Number(params.id);
+    const utilisateurId = Number(req.nextUrl.searchParams.get("utilisateurId"));
+
+     // ✅ Enregistrer dans les logs
+     await enregistrerLog(utilisateurId, `Modification des informations du professeur ID ${professeurId}`);
+
 
     return NextResponse.json({ message: "Professeur modifié avec succès" }, { status: 200 });
   } catch (error) {

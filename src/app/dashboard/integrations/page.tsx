@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid2 from '@mui/material/Grid';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
@@ -91,13 +91,13 @@ export default function Page(): React.JSX.Element {
         </div>
       </Stack>
       <CompaniesFilters />
-      <Grid container spacing={3}>
+      <Grid2 container spacing={3}>
         {integrations.map((integration) => (
-          <Grid key={integration.id} lg={4} md={6} xs={12}>
+          <Grid2 key={integration.id} lg={4} md={6} xs={12}>
             <IntegrationCard integration={integration} />
-          </Grid>
+          </Grid2>
         ))}
-      </Grid>
+      </Grid2>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Pagination count={3} size="small" />
       </Box>

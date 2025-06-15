@@ -1,4 +1,3 @@
-// src/app/api/professeurs/ajouter/route.ts
 import { NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 import { writeFile, mkdir } from 'fs/promises';
@@ -12,6 +11,7 @@ const dbConfig = {
 
 export async function POST(req: Request) {
   try {
+    
     const formData = await req.formData();
 
     const nom = formData.get('nom') as string;
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const email = formData.get('email') as string;
     const statut = formData.get('statut') as 'Permanent' | 'Vacataire';
     const photoFile = formData.get('photo') as File | null;
-    const matieres = JSON.parse(formData.get('matieres') as string) as number[]; // Récupérer les matières sélectionnées
+    const matieres = JSON.parse(formData.get('matieres') as string) as number[];
 
     let photoUrl: string | null = null;
 
@@ -36,23 +36,28 @@ export async function POST(req: Request) {
 
     const connection = await mysql.createConnection(dbConfig);
 
-    // Insérer le professeur
     const [result] = await connection.execute(
       'INSERT INTO Professeur (nom, prenom, telephone, email, statut, photo) VALUES (?, ?, ?, ?, ?, ?)',
       [nom, prenom, telephone, email, statut, photoUrl]
     );
 
-    // Typage plus précis du résultat
     const professeurId = (result as mysql.OkPacket).insertId;
 
-
-    // Insérer les matières sélectionnées dans Professeur_Matiere
     for (const matiereId of matieres) {
       await connection.execute(
         'INSERT INTO Professeur_Matiere (id_professeur, id_matiere) VALUES (?, ?)',
         [professeurId, matiereId]
       );
     }
+
+    // ✅ Enregistrement du log directement ici
+    const utilisateurId = 1; // Remplacer par l'ID dynamique de l'utilisateur connecté
+    const action = `Ajout d'un professeur : ${nom} ${prenom}`;
+    const date_action = new Date();
+    await connection.execute(
+      'INSERT INTO log (utilisateur_id, action, date_action) VALUES (?, ?, ?)',
+      [utilisateurId, action, date_action]
+    );
 
     await connection.end();
 

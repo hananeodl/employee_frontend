@@ -12,18 +12,8 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import Grid from '@mui/material/Unstable_Grid2';
-=======
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
-
->>>>>>> c4d3a4e4ae0d0d6a6abd6617fd035f25be2b55b5
-=======
-import Grid from '@mui/material/Grid';
-
->>>>>>> c4d3a4e4ae0d0d6a6abd6617fd035f25be2b55b5
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Dialog from '@mui/material/Dialog';
@@ -32,12 +22,27 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+// Déclare un type personnalisé pour le JWT payload
+interface CustomJwtPayload {
+  nom?: string;
+  prenom?: string;
+  email?: string;
+  statut?: string;
+  telephone?: string;
+}
+
 export function AccountDetailsForm() {
-  const [user, setUser] = useState({ nom: '', prenom: '', email: '', statut: '', telephone: '' });
+  const [user, setUser] = useState({
+    nom: '',
+    prenom: '',
+    email: '',
+    statut: '',
+    telephone: '',
+  });
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = () => {
@@ -48,13 +53,13 @@ export function AccountDetailsForm() {
         return;
       }
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode<CustomJwtPayload>(token);
         setUser({
-          nom: decoded.nom || '',
-          prenom: decoded.prenom || '',
-          email: decoded.email || '',
-          statut: decoded.statut || '',
-          telephone: decoded.telephone || '',
+          nom: decoded.nom ?? '',
+          prenom: decoded.prenom ?? '',
+          email: decoded.email ?? '',
+          statut: decoded.statut ?? '',
+          telephone: decoded.telephone ?? '',
         });
       } catch (error) {
         console.error('Token invalide', error);
@@ -66,8 +71,15 @@ export function AccountDetailsForm() {
     fetchUser();
   }, [router]);
 
-  const handleChange = (e) => {
+  // Fonction pour gérer les changements dans les champs de texte
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    setUser((prevUser) => ({ ...prevUser, [name]: value }));
+  };
+
+  // Fonction pour gérer les changements dans le Select
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target as { name: string; value: string };
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
@@ -76,7 +88,7 @@ export function AccountDetailsForm() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Vous devez être connecté pour effectuer cette action.');
+        console.error('Vous devez être connecté pour effectuer cette action.');
         return;
       }
       const response = await fetch('/api/auth/update-user', {
@@ -91,11 +103,11 @@ export function AccountDetailsForm() {
         setOpenSuccess(true);
       } else {
         const errorData = await response.json();
-        alert(`Erreur: ${errorData.message}`);
+        console.error(`Erreur: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Erreur de mise à jour:', error);
-      alert('Une erreur est survenue.');
+      console.error('Une erreur est survenue.');
     }
   };
 
@@ -108,85 +120,41 @@ export function AccountDetailsForm() {
           <CardHeader subheader="Les informations peuvent être modifiées" title="Profil" />
           <Divider />
           <CardContent>
-<<<<<<< HEAD
-<<<<<<< HEAD
             <Grid container spacing={3}>
               <Grid md={6} xs={12}>
                 <FormControl fullWidth required>
                   <InputLabel>Prénom</InputLabel>
-                  <OutlinedInput value={user.nom} onChange={handleChange} label="Prénom" name="nom" />
+                  <OutlinedInput value={user.nom} onChange={handleInputChange} label="Prénom" name="nom" />
                 </FormControl>
               </Grid>
               <Grid md={6} xs={12}>
                 <FormControl fullWidth required>
                   <InputLabel>Nom</InputLabel>
-                  <OutlinedInput value={user.prenom} onChange={handleChange} label="Nom" name="prenom" />
+                  <OutlinedInput value={user.prenom} onChange={handleInputChange} label="Nom" name="prenom" />
                 </FormControl>
               </Grid>
               <Grid md={6} xs={12}>
                 <FormControl fullWidth required>
                   <InputLabel>Email</InputLabel>
-                  <OutlinedInput value={user.email} onChange={handleChange} label="Email" name="email" />
+                  <OutlinedInput value={user.email} onChange={handleInputChange} label="Email" name="email" />
                 </FormControl>
               </Grid>
               <Grid md={6} xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Téléphone</InputLabel>
-                  <OutlinedInput value={user.telephone} onChange={handleChange} label="Téléphone" name="telephone" type="tel" />
+                  <OutlinedInput value={user.telephone} onChange={handleInputChange} label="Téléphone" name="telephone" type="tel" />
                 </FormControl>
               </Grid>
               <Grid md={6} xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Statut</InputLabel>
-                  <Select value={user.statut || ''} onChange={handleChange} label="Statut" name="statut">
+                  <Select value={user.statut || ''} onChange={handleSelectChange} label="Statut" name="statut">
                     <MenuItem value="vacataire">Vacataire</MenuItem>
                     <MenuItem value="permanent">Permanent</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
             </Grid>
-=======
-=======
->>>>>>> c4d3a4e4ae0d0d6a6abd6617fd035f25be2b55b5
-          <Grid container spacing={2}>
-  <Grid item md={6} xs={12}>
-    <FormControl fullWidth required>
-      <InputLabel>Prénom</InputLabel>
-      <OutlinedInput value={user.nom} onChange={handleChange} label="Prénom" name="nom" />
-    </FormControl>
-  </Grid>
-  <Grid item md={6} xs={12}>
-    <FormControl fullWidth required>
-      <InputLabel>Nom</InputLabel>
-      <OutlinedInput value={user.prenom} onChange={handleChange} label="Nom" name="prenom" />
-    </FormControl>
-  </Grid>
-  <Grid item md={6} xs={12}>
-    <FormControl fullWidth required>
-      <InputLabel>Email</InputLabel>
-      <OutlinedInput value={user.email} onChange={handleChange} label="Email" name="email" />
-    </FormControl>
-  </Grid>
-  <Grid item md={6} xs={12}>
-    <FormControl fullWidth>
-      <InputLabel>Téléphone</InputLabel>
-      <OutlinedInput value={user.telephone} onChange={handleChange} label="Téléphone" name="telephone" type="tel" />
-    </FormControl>
-  </Grid>
-  <Grid item md={6} xs={12}>
-    <FormControl fullWidth>
-      <InputLabel>Statut</InputLabel>
-      <Select value={user.statut || ''} onChange={handleChange} label="Statut" name="statut">
-        <MenuItem value="vacataire">Vacataire</MenuItem>
-        <MenuItem value="permanent">Permanent</MenuItem>
-      </Select>
-    </FormControl>
-  </Grid>
-</Grid>
-<<<<<<< HEAD
->>>>>>> c4d3a4e4ae0d0d6a6abd6617fd035f25be2b55b5
-=======
->>>>>>> c4d3a4e4ae0d0d6a6abd6617fd035f25be2b55b5
           </CardContent>
           <Divider />
           <CardActions sx={{ justifyContent: 'flex-end' }}>

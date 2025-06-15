@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
-import { $Enums, PrismaClient } from '@prisma/client';
-import Statut = $Enums.Statut;
+import { PrismaClient } from '@prisma/client';  // Suppression de l'import de Statut
 
+/* eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Pour cette fois*/
 const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
@@ -32,11 +32,12 @@ export async function GET(req: Request) {
       nom: string;
       prenom: string;
       email: string;
-      statut: Statut;
+      statut: string;  // Utiliser un type générique pour le statut
       telephone?: string;
       photo?: string;
       Professeur_Matiere: { matiere: { nom: string } }[];
     } | null;
+
 
     console.log('Professeur récupéré:', professeur);
 
