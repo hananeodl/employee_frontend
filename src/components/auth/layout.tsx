@@ -92,7 +92,7 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
               color: "#F8FAFC",
             }}
           >
-            Gestion des Professeurs
+            Gestion des Employées
           </Typography>
           <Typography variant="subtitle1" sx={{ mt: 1, opacity: 0.9 }}>
             Une plateforme intuitive et optimisée pour une meilleure gestion.
