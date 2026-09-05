@@ -53,8 +53,3 @@ Instead of communicating directly with each microservice, the frontend communica
            └──────────────► Performance Review
 
 
-- Licensed under [MIT](https://github.com/devias-io/material-kit-react/blob/main/LICENSE.md)
-
-## Contact Us
-
-- Email Us: support@deviasio.zendesk.com
